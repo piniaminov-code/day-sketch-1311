@@ -81,7 +81,7 @@ var ITEMS=[
   html:"<p>ב־10:00 מחכה לנו שולחן 🍳☕</p>",
   riddle:{q:"פתרי את החידה כדי לגלות איפה: מי היה ראש העירייה הראשון של תל אביב? (שם משפחה)",a:["דיזנגוף","דיזינגוף"],hint:"<p>🎉 נכון! הולכים לאכול ברחוב <b>דיזנגוף</b>, בית מספר <b>99</b>. ב־10:00, תהיי מוכנה! 🥂</p>",tip:"[הרמז: שם הרחוב]"}},
  {h:10, emoji:"👧", title:"ברכה מהבנות שלך",
-  html:"<p>שלוש בנות שאוהבות אותך עד השמיים 💕</p><div class='daughter'><b>[שם בת 1]:</b> <span class='ph'>[ברכה]</span></div><div class='daughter'><b>[שם בת 2]:</b> <span class='ph'>[ברכה]</span></div><div class='daughter'><b>[שם בת 3]:</b> <span class='ph'>[ברכה]</span></div>",
+  html:"<p>שלוש בנות שאוהבות אותך עד השמיים 💕</p><div class='daughter'><b>ליאן</b> 💕</div><div class='daughter'><b>אגם</b> 💕</div><div class='daughter'><b>מיה</b> 💕</div>",
   media:[{t:"video",src:"media/daughters.mp4",label:"🎬 כאן יבוא סרטון הבנות (media/daughters.mp4)"}]},
  {h:11, emoji:"📸", title:"הגלריה שלנו",
   html:"<p>מסע קטן בתמונות של החיים שלנו ביחד ✨ <span class='ph'>[תמונות משותפות - פיני יספק]</span></p>",
@@ -90,7 +90,7 @@ var ITEMS=[
   html:"<p>לחצי על play 🍿</p>",
   media:[{t:"video",src:"media/video.mp4",label:"🎬 כאן יבוא הסרטון (media/video.mp4)"}]},
  {h:13, emoji:"💌", title:"ברכות מההורים ומהחברים",
-  html:"<p>כולם חושבים עלייך היום 🥰</p><div class='daughter'><b>[ההורים]:</b> <span class='ph'>[ברכה / סרטון]</span></div><div class='daughter'><b>[חברים וחברות]:</b> <span class='ph'>[ברכות]</span></div>",
+  html:"<p>כולם חושבים עלייך היום 🥰</p><div class='daughter'><b>ההורים:</b> <span class='ph'>[ברכה / סרטון]</span></div><div class='daughter'><b>האחיינים:</b> <span class='ph'>[ברכה]</span></div><div class='daughter'><b>עוד מהמשפחה:</b> <span class='ph'>[ברכה]</span></div><div class='daughter'><b>חברים וחברות:</b> <span class='ph'>[ברכות]</span></div>",
   media:[{t:"video",src:"media/friends.mp4",label:"🎬 סרטון ברכה מההורים/חברים (אופציונלי)"}]},
  {h:14, emoji:"🧭", title:"רמז: מה עושים אחר הצהריים",
   html:"<p><span class='ph'>[הפעילות עדיין לא הוחלטה]</span></p>",
@@ -101,13 +101,14 @@ var ITEMS=[
  {h:16, emoji:"🔥", title:"הרמז האחרון: הערב",
   cls:"final",
   html:"<p class='sign'>פיני ❤️</p>",
-  riddle:{q:"חידה אחרונה: מה מסתובב על האש, מקבל פיתה, ומשמח את כולם? (שתי מילים: על ה...)",a:["על האש","על האש!","מנגל","בשר על האש"],hint:"<p>🎉 בדיוק! 🥩🔥 מנגל בבית עם חברים, מתחילים ב־<b>16:30</b>. תתלבשי יפה ותתכוננו לחגוג! 🥳</p>",tip:"[חידה לדוגמה, אפשר להחליף]"}}
+  riddle:{q:"חידה אחרונה: מה מסתובב על האש, מקבל פיתה, ומשמח את כולם? (שתי מילים: על ה...)",a:["על האש","על האש!","מנגל","בשר על האש"],hint:"<p>🎉 בדיוק! 🥩🔥 מנגל בבית עם חברים בערב. תתלבשי יפה ותתכונני לחגוג! 🥳</p>",tip:"[חידה לדוגמה, אפשר להחליף]"}}
 ];
 
 var q=new URLSearchParams(location.search);
 var PREVIEW=q.has("preview") || /^(localhost|127)/.test(location.hostname) || Date.now()<Date.parse(BDAY+"T00:00:00"+TZ);
 var sim=null; // null = שעון אמיתי
 var shown={};
+var solved={};
 try{for(var k=0;k<20;k++)if(localStorage.getItem('sv'+k))solved[k]=1}catch(e){}
 
 function pad(n){return (n<10?"0":"")+n}
@@ -119,7 +120,6 @@ function riddleHTML(it,i){
   if(solved[i]) return '<div class="riddle ok">'+r.hint+'</div>';
   return '<div class="riddle"><div class="q">🧩 '+r.q+'</div><div class="ans"><input id="ri'+i+'" placeholder="התשובה שלך" autocomplete="off"><button onclick="check('+i+')">בדקי</button></div><div class="msg" id="rm'+i+'"></div>'+(PREVIEW?'<div class="pvtip">🔧 בתצוגה: תשובה לדוגמה "'+r.a[0]+'"</div>':'')+'</div>';
 }
-var solved={};
 function norm(x){return x.replace(/[\s!.?"״׳']/g,"").toLowerCase()}
 function check(i){
   var v=norm(document.getElementById("ri"+i).value),ok=ITEMS[i].riddle.a.some(function(a){return norm(a)===v});
