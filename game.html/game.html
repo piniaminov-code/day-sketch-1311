@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="robots" content="noindex,nofollow">
+<title>🐔 פלישת התרנגולות - המסע של שני</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#04041a;font-family:"Heebo","Assistant","Segoe UI",Arial,sans-serif;color:#fff;touch-action:none;user-select:none}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+canvas{display:block;background:#04041a;border-radius:12px;box-shadow:0 0 40px #223}
+.overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at 50% 30%,#10104a 0,#04041a 70%);padding:24px;z-index:5}
+.hidden{display:none!important}
+h1{font-size:30px;color:#ffd94d;text-shadow:0 2px 12px #f8064d88;margin-bottom:8px}
+h2{font-size:24px;color:#7fd4ff;margin-bottom:10px}
+p{font-size:17px;line-height:1.6;color:#dfe6ff;max-width:340px}
+.btn{margin-top:18px;background:linear-gradient(180deg,#ffb52e,#f07b1d);border:0;border-radius:999px;padding:13px 34px;font:inherit;font-size:20px;font-weight:800;color:#3a1c00;box-shadow:0 4px 0 #a54e00,0 6px 18px #0008;cursor:pointer}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #a54e00}
+.btn2{background:linear-gradient(180deg,#5ec9f8,#2b7fd4);color:#06233f;box-shadow:0 4px 0 #1b5390,0 6px 18px #0008}
+.slot{margin:8px auto 0;background:#ffffff14;border:2px dashed #7fd4ff66;border-radius:14px;padding:12px 16px;color:#9fd8ff;font-size:15px;max-width:320px}
+.ph{display:inline-block;background:#fff3b0;color:#7a5a00;border-radius:6px;padding:0 8px;font-size:13px;font-weight:700}
+.stars{position:absolute;inset:0;pointer-events:none}
+.planet{width:150px;height:150px;border-radius:50%;margin:6px auto 14px;box-shadow:inset -18px -14px 0 #0006,0 0 44px currentColor}
+.hearts{position:fixed;top:10px;left:12px;font-size:22px;z-index:4;direction:ltr}
+.score{position:fixed;top:10px;right:12px;font-size:17px;font-weight:800;color:#ffd94d;z-index:4;text-align:left;direction:ltr}
+.worldtag{position:fixed;top:38px;right:12px;font-size:13px;color:#9fd8ff;z-index:4}
+#pad{position:fixed;bottom:14px;left:0;right:0;text-align:center;color:#ffffff66;font-size:13px;z-index:4}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="cv" width="390" height="700"></canvas></div>
+<div class="hearts" id="hearts"></div>
+<div class="score" id="score"></div>
+<div class="worldtag" id="worldtag"></div>
+<div id="pad">גוררים את החללית • הירי אוטומטי</div>
+
+<div class="overlay" id="ovTitle">
+  <h1>🐔 פלישת התרנגולות</h1>
+  <h2>המסע של שני</h2>
+  <p>התרנגולות חזרו, והפעם הן מסתירות את זכרונות יום ההולדת שלך בין הכוכבים! עברי 5 עולמות, הביסי את הבוס של כל כוכב, ופתחי את ההפתעה שמחכה שם 💝</p>
+  <p style="margin-top:8px;color:#9fd8ff">🎮 גוררים את החללית, הירי אוטומטי. 3 לבבות בכל עולם.</p>
+  <button class="btn" id="btnStart">להתחיל במסע 🚀</button>
+  <button class="btn btn2 hidden" id="btnContinue">להמשיך מאיפה שעצרתי</button>
+</div>
+
+<div class="overlay hidden" id="ovTravel">
+  <h2 id="travelTitle">טסים לכוכב 1</h2>
+  <div class="planet" id="planetArt"></div>
+  <p id="travelText"></p>
+  <button class="btn" id="btnGo">לשלב הראשון! 🐔</button>
+</div>
+
+<div class="overlay hidden" id="ovReward">
+  <h1>🏆 הבוס הובס!</h1>
+  <h2 id="rewardWorld"></h2>
+  <p id="rewardText">הזיכרון של העולם הזה נפתח:</p>
+  <div class="slot" id="rewardMedia">📷 <span class="ph">[כאן תיכנס תמונה / סרטון מהחיים - התוכן מתווסף]</span></div>
+  <div class="slot" id="rewardPhrase">💬 <span class="ph">[כאן ייכנס משפט מהחיים שלך - התוכן מתווסף]</span></div>
+  <div class="slot" id="rewardGreet">🎬 <span class="ph">[כאן תיכנס ברכה - התוכן מתווסף]</span></div>
+  <button class="btn" id="btnNext">להמשך המסע ✨</button>
+</div>
+
+<div class="overlay hidden" id="ovOver">
+  <h1>💥 נפלת בקרב</h1>
+  <p>התרנגולות ניצחו בסיבוב הזה... אבל שני לא מוותרת!</p>
+  <button class="btn" id="btnRetry">נסי שוב 💪</button>
+</div>
+
+<div class="overlay hidden" id="ovWin">
+  <h1>🎉 ניצחת את כולן!</h1>
+  <p>חצית את כל החלל, ניצחת את כל הבוסים ופתחת את כל הזכרונות. יום הולדת שמח, שני! ❤️</p>
+  <div class="slot">🎁 <span class="ph">[הברכה המרכזית תיכנס כאן]</span></div>
+  <p style="margin-top:16px;color:#9fd8ff">ההמשך יבוא… הכוכב הבא: חבורת פיני טורס 🌍✨</p>
+  <div class="slot hidden" id="winMedia"></div>
+  <button class="btn" id="btnAgain">לשחק שוב 🔁</button>
+</div>
+
+<script>
+"use strict";
+var cv=document.getElementById("cv"),cx=cv.getContext("2d");
+var W=390,H=700;
+function fit(){var s=Math.min(innerWidth/W,innerHeight/H);cv.style.width=(W*s)+"px";cv.style.height=(H*s)+"px"}
+addEventListener("resize",fit);fit();
+
+/* ===== העולמות. [..] = מקום שמור לתוכן אישי שמתווסף ===== */
+var WORLDS=[
+ {name:"כוכב הילדות", sub:"שם הכול התחיל", color:"#7fb8ff", form:["grid","vee"], boss:"chicken", bossHP:90, bossSpeed:1.1, eggRate:0.012},
+ {name:"ואז הגיעה יפה", sub:"החברה הכי טובה, והמשפחה", color:"#ffb27f", form:["grid","ring"], boss:"chicken", bossHP:110, bossSpeed:1.3, eggRate:0.016},
+ {name:"גלקסיית גיל ההתבגרות", sub:"אמא, את לא מבינה כלום!", color:"#8fff9f", form:["vee","asteroids"], boss:"chicken", bossHP:130, bossSpeed:1.5, eggRate:0.020},
+ {name:"תואר, טבעת וכרטיס בכיוון אחד", sub:"מהאוניברסיטה לחופה, ומשם לטיול הגדול", color:"#e08fff", form:["grid","lines"], boss:"chicken", bossHP:150, bossSpeed:1.7, eggRate:0.028},
+ {name:"כוכב ההורות", sub:"ליאן, אגם ומיה", color:"#ff8f9f", form:["ring","asteroids"], boss:"egg", bossHP:170, bossSpeed:1.1, eggRate:0.028}
+];
+var WIN_VIDEO=null; /* סרטון מחזור תמונות של חבורת פיני טורס - אופציונלי, מהחומר שיגיע */
+/* חריצי תוכן לכל עולם - מתמלאים רק בחומר אמיתי שפיני שולח. null = פלייסהולדר */
+var REWARDS=[
+ {greet:"ברכה מההורים",video:null,photo:null,phrase:null},
+ {greet:"ברכה מיפית ומשפחתה",video:null,photo:null,phrase:null},
+ {greet:"ברכה מחברות הילדות",video:null,photo:null,phrase:null},
+ {greet:"ברכה מפיני",video:null,photo:null,phrase:null},
+ {greet:"ברכה מליאן, אגם ומיה",video:null,photo:null,phrase:null}
+];
+var SAVEKEY="ci-shani-journey-v1";
+function loadSave(){try{return JSON.parse(localStorage.getItem(SAVEKEY))||null}catch(e){return null}}
+function store(s){try{localStorage.setItem(SAVEKEY,JSON.stringify(s))}catch(e){}}
+var save=loadSave()||{world:0,rewards:[false,false,false,false,false]};
+
+var stars=[];for(var i=0;i<90;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+0.4,v:Math.random()*0.25+0.08});
+var state="title",world=0,wave=0,px=W/2,py=H-90,lives=3,score=0,legs=0,weapon=1,t=0,inv=0;
+var bullets=[],chickens=[],eggs=[],drops=[],parts=[],asteroids=[];
+var boss=null,fireT=0,shake=0,drift=0;
+
+function $(id){return document.getElementById(id)}
+function show(id){["ovTitle","ovTravel","ovReward","ovOver","ovWin"].forEach(function(o){$(o).classList.toggle("hidden",o!==id)});$("pad").style.display=id?"none":"block"}
+function hud(){$("hearts").textContent="❤️".repeat(lives);$("score").innerHTML="⭐ "+score+'  <svg width="15" height="15" viewBox="0 0 24 24" style="vertical-align:-2px"><circle cx="15" cy="9" r="6.5" fill="#c98a4b"/><rect x="2.5" y="12.5" width="10" height="4.5" rx="2.2" transform="rotate(-45 7 14)" fill="#c98a4b"/><circle cx="4.5" cy="18" r="2.5" fill="#f4e4c8"/><circle cx="8" cy="21" r="2.5" fill="#f4e4c8"/></svg> '+legs;$("worldtag").textContent=(state==="play"||state==="boss")?(WORLDS[world].name+" • שלב "+Math.min(wave+1,WORLDS[world].form.length+1)+"/"+(WORLDS[world].form.length+1)):""}
+
+/* ===== ציור ===== */
+function drawChicken(x,y,s,flap,hue){
+  cx.save();cx.translate(x,y);cx.scale(s,s);
+  var w=Math.sin(flap)*6;
+  /* כנפיים לבנות גדולות עם נוצות */
+  cx.fillStyle="#f2f2f2";
+  for(var side=-1;side<=1;side+=2){
+    cx.save();cx.scale(side,1);
+    cx.beginPath();cx.ellipse(15,-4+w*side,15,8,side*(0.45+w*0.03),0,7);cx.fill();
+    cx.fillStyle="#dcdcdc";
+    for(var f=0;f<3;f++){cx.beginPath();cx.ellipse(24+f*4,-2+w*side+f*2,6,3,side*(0.6+f*0.2),0,7);cx.fill()}
+    cx.fillStyle="#f2f2f2";
+    cx.restore();
+  }
+  /* זנב */
+  cx.fillStyle=hue||"#5aa2e8";
+  for(var t2=-1;t2<2;t2++){cx.beginPath();cx.ellipse(t2*5,-13,4,7,t2*0.4,0,7);cx.fill()}
+  /* גוף */
+  cx.fillStyle=hue||"#5aa2e8";
+  cx.beginPath();cx.ellipse(0,1,13,12,0,0,7);cx.fill();
+  cx.fillStyle="#fff";cx.beginPath();cx.ellipse(0,4,10,8,0,0,7);cx.fill();
+  /* רגליים */
+  cx.strokeStyle="#f8a01c";cx.lineWidth=2;
+  cx.beginPath();cx.moveTo(-4,12);cx.lineTo(-4,16);cx.moveTo(4,12);cx.lineTo(4,16);cx.stroke();
+  /* מקור */
+  cx.fillStyle="#f8a01c";cx.beginPath();cx.moveTo(-3.5,-6);cx.lineTo(3.5,-6);cx.lineTo(0,1);cx.closePath();cx.fill();
+  /* קטרה אדומה */
+  cx.fillStyle="#e33";for(var i=-1;i<2;i++){cx.beginPath();cx.arc(i*4.5,-13,3.2,0,7);cx.fill()}
+  /* עיניים */
+  cx.fillStyle="#fff";cx.beginPath();cx.arc(-5,-7,2.8,0,7);cx.fill();cx.beginPath();cx.arc(5,-7,2.8,0,7);cx.fill();
+  cx.fillStyle="#222";cx.beginPath();cx.arc(-5,-7,1.4,0,7);cx.fill();cx.beginPath();cx.arc(5,-7,1.4,0,7);cx.fill();
+  cx.restore();
+}
+function drawAsteroid(a){
+  cx.save();cx.translate(a.x,a.y);cx.rotate(a.rot);
+  cx.fillStyle="#8a8578";
+  cx.beginPath();
+  for(var i=0;i<7;i++){var ang=i/7*Math.PI*2;var r=a.r*(0.82+((i*37)%10)/28);var px2=Math.cos(ang)*r,py2=Math.sin(ang)*r;i?cx.lineTo(px2,py2):cx.moveTo(px2,py2)}
+  cx.closePath();cx.fill();
+  cx.fillStyle="#6e6a5e";
+  cx.beginPath();cx.arc(-a.r*0.3,-a.r*0.2,a.r*0.22,0,7);cx.fill();
+  cx.beginPath();cx.arc(a.r*0.25,a.r*0.3,a.r*0.16,0,7);cx.fill();
+  cx.restore();
+}
+function drawShip(x,y){
+  cx.save();cx.translate(x,y);cx.scale(1.35,1.35);
+  cx.shadowColor="#7fd4ff";cx.shadowBlur=14;
+  var f=6+Math.random()*5;
+  cx.fillStyle="#ff9d2e";cx.beginPath();cx.moveTo(-5,14);cx.lineTo(0,14+f);cx.lineTo(5,14);cx.closePath();cx.fill();
+  cx.fillStyle="#e8eefc";cx.beginPath();cx.moveTo(0,-20);cx.lineTo(14,12);cx.lineTo(-14,12);cx.closePath();cx.fill();
+  cx.fillStyle="#9fd8ff";cx.beginPath();cx.arc(0,-3,5,0,7);cx.fill();
+  cx.fillStyle="#aab8cf";cx.fillRect(-22,8,44,5);
+  cx.restore();
+}
+function drawEgg(e){cx.fillStyle="#fff8e0";cx.beginPath();cx.ellipse(e.x,e.y,4.5,6,0,0,7);cx.fill();cx.strokeStyle="#d9c48a";cx.stroke()}
+function drawLeg(d){cx.save();cx.translate(d.x,d.y);cx.rotate(Math.sin(t/9+d.x)*0.4);cx.fillStyle="#c98a4b";cx.fillRect(-2,-2,10,6);cx.fillStyle="#f4e4c8";cx.beginPath();cx.arc(-4,0,4,0,7);cx.fill();cx.restore()}
+function drawGift(d){cx.fillStyle="#e8557a";cx.fillRect(d.x-7,d.y-7,14,14);cx.fillStyle="#ffd94d";cx.fillRect(d.x-2,d.y-7,4,14);cx.fillRect(d.x-7,d.y-2,14,4)}
+function burst(x,y,c,n){for(var i=0;i<(n||10);i++)parts.push({x:x,y:y,vx:(Math.random()-0.5)*5,vy:(Math.random()-0.5)*5,l:22,c:c})}
+
+/* ===== לוגיקה ===== */
+function startWorld(wi){
+  world=wi;wave=0;lives=3;inv=60;boss=null;
+  show(null);state="play";spawnWave();hud();
+}
+function spawnWave(){
+  chickens=[];eggs=[];bullets=[];asteroids=[];
+  var f=WORLDS[world].form[wave],hp=1+Math.floor(world/2),r,c,i;
+  if(f==="grid"){
+    var cols=5+Math.min(wave,2);
+    for(r=0;r<2;r++)for(c=0;c<cols;c++)
+      chickens.push({x:W/2+(c-(cols-1)/2)*54,y:60+r*54,base:60+r*54,ph:Math.random()*6,hp:hp,alive:true});
+  }else if(f==="vee"){
+    for(c=0;c<7;c++)
+      chickens.push({x:W/2+(c-3)*46,y:60+Math.abs(c-3)*46,base:60+Math.abs(c-3)*46,ph:Math.random()*6,hp:hp,alive:true});
+    chickens.push({x:W/2,y:56,base:56,ph:1,hp:hp+1,alive:true});
+  }else if(f==="ring"){
+    for(i=0;i<10;i++)
+      chickens.push({x:W/2,y:150,ring:1,ph:i/10*Math.PI*2,hp:hp,alive:true});
+  }else if(f==="lines"){
+    for(c=0;c<6;c++)for(r=0;r<3;r++)
+      chickens.push({x:60+c*54,y:70+r*46,base:70+r*46,ph:c*0.9,hp:hp,alive:true});
+  }else if(f==="asteroids"){
+    for(i=0;i<6;i++)
+      chickens.push({x:60+(i%3)*135,y:70+Math.floor(i/3)*56,base:70+Math.floor(i/3)*56,ph:Math.random()*6,hp:hp,alive:true});
+    for(i=0;i<7;i++)
+      asteroids.push({x:30+Math.random()*(W-60),y:-40-i*100,vy:1.2+Math.random()*1.2+world*0.25,r:16+Math.random()*14,rot:0,vr:(Math.random()-0.5)*0.06,hp:2,alive:true});
+  }
+}
+function startBoss(){
+  var cf=WORLDS[world];asteroids=[];
+  boss={x:W/2,y:130,hp:cf.bossHP,max:cf.bossHP,dir:1,ph:0,type:cf.boss};
+  state="boss";hud();
+}
+function hitPlayer(){
+  if(inv>0)return;
+  lives--;inv=90;shake=14;burst(px,py,"#7fd4ff",16);hud();
+  if(lives<=0){state="over";show("ovOver")}
+}
+function update(){
+  t++;
+  for(var i=0;i<stars.length;i++){stars[i].y+=stars[i].v*(state==="travel"?4:1);if(stars[i].y>H)stars[i].y=0}
+  if(state!=="play"&&state!=="boss")return;
+  if(inv>0)inv--;
+  var cf=WORLDS[world];
+  /* תרנגולות */
+  var anyAlive=false;
+  for(i=0;i<chickens.length;i++){var ch=chickens[i];if(!ch.alive)continue;anyAlive=true;
+    if(ch.ring){var ang=t/90+ch.ph;ch.x=W/2+Math.cos(ang)*115;ch.y=150+Math.sin(ang)*85}
+    else{ch.x+=Math.sin(t/40+ch.ph)*0.5;ch.y=ch.base+Math.sin(t/55+ch.ph)*8}
+  }
+  if(state==="play"&&Math.random()<cf.eggRate){
+    var aliveCh=chickens.filter(function(c){return c.alive});
+    if(aliveCh.length){var src=aliveCh[Math.floor(Math.random()*aliveCh.length)];eggs.push({x:src.x,y:src.y+12,vy:2.4+world*0.3})}
+  }
+  /* בוס */
+  if(state==="boss"&&boss){
+    boss.ph+=0.02;
+    if(boss.type==="egg"){
+      boss.x=W/2+Math.sin(boss.ph*0.8)*70;boss.y=145+Math.sin(boss.ph*2.3)*22;
+      if(Math.random()<0.012)for(var a=0;a<8;a++)eggs.push({x:boss.x,y:boss.y+40,vy:2.2+Math.cos(a/8*Math.PI*2)*1.6,vx:Math.sin(a/8*Math.PI*2)*2.2});
+      if(Math.random()<cf.eggRate)eggs.push({x:boss.x+(Math.random()-0.5)*60,y:boss.y+50,vy:2.8});
+    }else{
+      boss.x+=boss.dir*cf.bossSpeed;
+      if(boss.x>W-70)boss.dir=-1;if(boss.x<70)boss.dir=1;
+      boss.y=130+Math.sin(boss.ph*2)*16;
+      if(Math.random()<cf.eggRate*2.2)eggs.push({x:boss.x+(Math.random()-0.5)*70,y:boss.y+30,vy:2.8+world*0.3});
+      if(Math.random()<cf.eggRate*0.8)for(var a2=-1;a2<2;a2++)eggs.push({x:boss.x,y:boss.y+30,vy:2.2,vx:a2*1.1});
+    }
+  }
+  /* ירי אוטומטי */
+  fireT--;
+  if(fireT<=0){bullets.push({x:px,y:py-16,vy:-7});if(weapon>1){bullets.push({x:px-9,y:py-10,vy:-6.4,vx:-0.7});bullets.push({x:px+9,y:py-10,vy:-6.4,vx:0.7})}fireT=weapon>2?9:12}
+  /* קליעים */
+  for(i=bullets.length-1;i>=0;i--){var b=bullets[i];b.y+=b.vy;b.x+=b.vx||0;
+    if(b.y<-10){bullets.splice(i,1);continue}
+    var consumed=false;
+    for(var j=0;j<chickens.length;j++){var c2=chickens[j];
+      if(c2.alive&&Math.abs(b.x-c2.x)<16&&Math.abs(b.y-c2.y)<14){
+        c2.hp--;consumed=true;
+        if(c2.hp<=0){c2.alive=false;score+=10;burst(c2.x,c2.y,"#fff",12);
+          var r=Math.random();
+          if(r<0.16)drops.push({x:c2.x,y:c2.y,vy:1.6,kind:"leg"});
+          else if(r<0.22)drops.push({x:c2.x,y:c2.y,vy:1.6,kind:"gift"});
+        }else burst(b.x,b.y,"#ffd94d",4);
+        break}
+    }
+    if(consumed){bullets.splice(i,1);continue}
+    if(consumed)continue;
+    for(var j2=0;j2<asteroids.length;j2++){var a3=asteroids[j2];
+      if(a3.alive&&Math.abs(b.x-a3.x)<a3.r&&Math.abs(b.y-a3.y)<a3.r){
+        a3.hp--;bullets.splice(i,1);burst(b.x,b.y,"#8a8578",5);
+        if(a3.hp<=0){a3.alive=false;score+=15;burst(a3.x,a3.y,"#8a8578",14)}
+        consumed=true;break}
+    }
+    if(consumed)continue;
+    if(state==="boss"&&boss&&Math.abs(b.x-boss.x)<(boss.type==="egg"?54:48)&&Math.abs(b.y-boss.y)<(boss.type==="egg"?62:36)){
+      boss.hp--;score+=5;burst(b.x,b.y,"#ffd94d",5);bullets.splice(i,1);
+      if(boss.hp<=0){boss=null;shake=20;burst(W/2,140,"#e8557a",26);winWorld()}
+    }
+  }
+  /* ביצים */
+  for(i=eggs.length-1;i>=0;i--){var e=eggs[i];e.y+=e.vy;e.x+=e.vx||0;
+    if(e.y>H+10){eggs.splice(i,1);continue}
+    if(Math.abs(e.x-px)<14&&Math.abs(e.y-py)<16){eggs.splice(i,1);hitPlayer()}
+  }
+  /* שלל */
+  for(i=drops.length-1;i>=0;i--){var d=drops[i];d.y+=d.vy;
+    if(d.y>H+12){drops.splice(i,1);continue}
+    if(Math.abs(d.x-px)<18&&Math.abs(d.y-py)<18){
+      if(d.kind==="leg"){legs++;score+=25}else{weapon=Math.min(3,weapon+1);score+=50}
+      burst(d.x,d.y,d.kind==="leg"?"#c98a4b":"#e8557a",8);drops.splice(i,1);hud();
+    }
+  }
+  /* אסטרוידים */
+  for(i=asteroids.length-1;i>=0;i--){var as=asteroids[i];if(!as.alive){asteroids.splice(i,1);continue}
+    as.y+=as.vy;as.rot+=as.vr;
+    if(as.y>H+40){asteroids.splice(i,1);continue}
+    if(Math.abs(as.x-px)<as.r*0.8+10&&Math.abs(as.y-py)<as.r*0.8+12){asteroids.splice(i,1);burst(as.x,as.y,"#8a8578",14);hitPlayer()}
+  }
+  /* מגע עם תרנגולת */
+  for(i=0;i<chickens.length;i++)if(chickens[i].alive&&Math.abs(chickens[i].x-px)<20&&Math.abs(chickens[i].y-py)<20)hitPlayer();
+  /* חלקיקים */
+  for(i=parts.length-1;i>=0;i--){var p=parts[i];p.x+=p.vx;p.y+=p.vy;p.l--;if(p.l<=0)parts.splice(i,1)}
+  if(shake>0)shake--;
+  /* סוף שלב */
+  if(state==="play"&&!anyAlive){
+    wave++;
+    if(wave>=cf.form.length)startBoss();else{spawnWave();hud()}
+  }
+}
+function winWorld(){
+  save.world=Math.max(save.world,world+1);save.rewards[world]=true;store(save);
+  state="reward";
+  $("rewardWorld").textContent=WORLDS[world].name+" שוחרר! ✨";
+  var rw=REWARDS[world];
+  $("rewardMedia").innerHTML=rw.video
+    ? '<video controls playsinline preload="metadata" style="max-width:100%;max-height:300px;border-radius:10px;background:#000" src="'+rw.video+'"></video>'
+    : (rw.photo ? '<img style="max-width:100%;border-radius:10px" src="'+rw.photo+'" alt="">' : '📷 <span class="ph">[כאן תיכנס תמונה / סרטון מהחיים - התוכן מתווסף]</span>');
+  $("rewardPhrase").innerHTML=rw.phrase ? '💬 '+rw.phrase : '💬 <span class="ph">[כאן ייכנס משפט מהחיים שלך - התוכן מתווסף]</span>';
+  $("rewardGreet").innerHTML='🎬 <span class="ph">['+rw.greet+' - התוכן מתווסף]</span>';
+  show("ovReward");
+}
+function render(){
+  cx.save();
+  if(shake>0)cx.translate((Math.random()-0.5)*shake,(Math.random()-0.5)*shake);
+  cx.fillStyle="#04041a";cx.fillRect(-10,-10,W+20,H+20);
+  for(var i=0;i<stars.length;i++){var s=stars[i];cx.fillStyle="rgba(255,255,255,"+(0.3+s.r/2.5)+")";cx.fillRect(s.x,s.y,s.r,s.r)}
+  if(state==="play"||state==="boss"){
+    /* כוכב העולם בפינה */
+    cx.fillStyle=WORLDS[world].color;cx.globalAlpha=0.25;cx.beginPath();cx.arc(W-30,560,90,0,7);cx.fill();cx.globalAlpha=1;
+    for(i=0;i<chickens.length;i++)if(chickens[i].alive)drawChicken(chickens[i].x,chickens[i].y,1,t/6+chickens[i].ph);
+    if(boss){
+      if(boss.type==="egg"){
+        cx.save();cx.translate(boss.x,boss.y);
+        cx.fillStyle="#f5edd8";cx.beginPath();cx.ellipse(0,0,52,66,0,0,7);cx.fill();
+        cx.strokeStyle="#c9b98a";cx.lineWidth=2;cx.stroke();
+        var dmg=1-boss.hp/boss.max;
+        cx.strokeStyle="#8a7a4a";cx.lineWidth=2.5;cx.beginPath();
+        cx.moveTo(-30,-20);cx.lineTo(-10,-5);cx.lineTo(-22,10);
+        if(dmg>0.33){cx.moveTo(25,-30);cx.lineTo(10,-10);cx.lineTo(28,5)}
+        if(dmg>0.66){cx.moveTo(-15,30);cx.lineTo(5,18);cx.lineTo(20,38)}
+        cx.stroke();cx.restore();
+      }else drawChicken(boss.x,boss.y,3.2,boss.ph*3,"#e8b45a");
+      cx.fillStyle="#0008";cx.fillRect(60,52,W-120,10);
+      cx.fillStyle="#e8557a";cx.fillRect(60,52,(W-120)*(boss.hp/boss.max),10);
+      cx.strokeStyle="#fff";cx.strokeRect(60,52,W-120,10);
+    }
+    cx.fillStyle="#7fd4ff";
+    for(i=0;i<bullets.length;i++){cx.fillRect(bullets[i].x-1.5,bullets[i].y-6,3,10)}
+    for(i=0;i<asteroids.length;i++)drawAsteroid(asteroids[i]);
+    for(i=0;i<eggs.length;i++)drawEgg(eggs[i]);
+    for(i=0;i<drops.length;i++)drops[i].kind==="leg"?drawLeg(drops[i]):drawGift(drops[i]);
+    for(i=0;i<parts.length;i++){cx.globalAlpha=parts[i].l/22;cx.fillStyle=parts[i].c;cx.fillRect(parts[i].x-2,parts[i].y-2,4,4);cx.globalAlpha=1}
+    if(!(inv>0&&Math.floor(t/5)%2))drawShip(px,py);
+  }
+  cx.restore();
+}
+function loop(){update();render();requestAnimationFrame(loop)}
+loop();
+
+/* ===== קלט ===== */
+function setX(clientX){var r=cv.getBoundingClientRect();px=Math.max(24,Math.min(W-24,(clientX-r.left)*(W/r.width)))}
+cv.addEventListener("touchmove",function(e){e.preventDefault();setX(e.touches[0].clientX)},{passive:false});
+cv.addEventListener("touchstart",function(e){e.preventDefault();setX(e.touches[0].clientX)},{passive:false});
+cv.addEventListener("mousemove",function(e){if(e.buttons)setX(e.clientX)});
+cv.addEventListener("mousedown",function(e){setX(e.clientX)});
+addEventListener("keydown",function(e){if(e.key==="ArrowLeft")px=Math.max(24,px-22);if(e.key==="ArrowRight")px=Math.min(W-24,px+22)});
+
+/* ===== מסכים ===== */
+function travelTo(wi){
+  state="travel";
+  $("travelTitle").textContent="טסים אל "+WORLDS[wi].name+" 🚀";
+  $("travelText").innerHTML=(wi===0?"המסע מתחיל! ":"")+WORLDS[wi].sub+". בכוכב הזה מחכה זיכרון נעול. הביסי את הבוס כדי לפתוח אותו.";
+  var p=$("planetArt");p.style.background="radial-gradient(circle at 35% 30%,"+WORLDS[wi].color+",#10104a)";p.style.color=WORLDS[wi].color;
+  show("ovTravel");
+  $("btnGo").onclick=function(){startWorld(wi)};
+}
+$("btnStart").onclick=function(){save={world:0,rewards:[false,false,false,false,false]};store(save);score=0;legs=0;weapon=1;travelTo(0)};
+if(save.world>0&&save.world<5){$("btnContinue").classList.remove("hidden");$("btnContinue").onclick=function(){travelTo(save.world)}}
+$("btnNext").onclick=function(){
+  if(world+1>=WORLDS.length){state="win";
+    if(WIN_VIDEO){var wm=$("winMedia");wm.classList.remove("hidden");wm.innerHTML='<video controls playsinline preload="metadata" style="max-width:100%;max-height:280px;border-radius:10px;background:#000" src="'+WIN_VIDEO+'"></video>'}
+    show("ovWin")}
+  else travelTo(world+1);
+};
+$("btnRetry").onclick=function(){travelTo(world)};
+$("btnAgain").onclick=function(){save={world:0,rewards:[false,false,false,false,false]};store(save);score=0;legs=0;weapon=1;travelTo(0)};
+hud();
+</script>
+</body>
+</html>
